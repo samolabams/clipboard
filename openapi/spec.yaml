@@ -1,0 +1,402 @@
+openapi: 3.0.0
+servers:
+  - url: 'http://localhost:8080'
+info:
+  title: Clipboard Coding Exercise
+  version: 1.0.0
+  description: Staff Dataset API
+tags:
+  - name: Auth
+    description: Authentication Endpoints
+  - name: Staff
+    description: Staff Dataset Endpoints
+  - name: Summary Statistics
+    description: Staff Summary Statistics Endpoints
+paths:
+  /v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Authenticates user
+      description: ''
+      operationId: loginUser
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+      responses:
+        '200':
+          description: login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/LoginSuccessfulResponse'
+        '401':
+          description: Invalid login credential
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/InvalidLoginCredentialError'
+
+  /v1/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Invalidate auth token
+      description: ''
+      operationId: logoutUser
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/LogoutSuccessfulResponse'
+      security:
+        - bearerAuth: []
+
+  /v1/staffs:
+    post:
+      tags:
+        - Staff
+      summary: Add a new staff to dataset
+      description: ''
+      operationId: addNewStaff
+      responses:
+        '201':
+          description: New staff data successfully added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffModel'
+        '400':
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/InvalidPayloadError'
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/Staff'
+
+  /v1/staffs/{staffId}:
+    delete:
+      tags:
+        - Staff
+      summary: Delete an existing staff
+      description: ''
+      operationId: deleteStaff
+      parameters:
+        - name: staffId
+          in: path
+          description: ID of staff to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Staff has been deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDeletedResponse'
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidStaffIdError'
+      security:
+        - bearerAuth: []
+
+  /v1/staffs/statistics:
+    get:
+      tags:
+        - Summary Statistics
+      summary: Calculate summary statistics for all staffs
+      description: ''
+      operationId: allStaffsSummaryStatistics
+      responses:
+        '200':
+          description: All staffs summary statistics calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffSummaryStatistics'
+      security:
+        - bearerAuth: []
+
+  /v1/staffs/contract/statistics:
+    get:
+      tags:
+        - Summary Statistics
+      summary: Calculate summary statistics for contract staffs
+      description: ''
+      operationId: contractStaffsSummaryStatistics
+      responses:
+        '200':
+          description: Contract staffs summary statistics calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffSummaryStatistics'
+      security:
+        - bearerAuth: []
+
+  /v1/staffs/department/statistics:
+    get:
+      tags:
+        - Summary Statistics
+      summary: Calculate summary statistics by departments
+      description: ''
+      operationId: departmentsSummaryStatistics
+      responses:
+        '200':
+          description: Summary statistics by department calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentSummaryStatistics'
+      security:
+        - bearerAuth: []
+
+  /v1/staffs/sub-department/statistics:
+    get:
+      tags:
+        - Summary Statistics
+      summary: Calculate summary statistics by sub-departments
+      description: ''
+      operationId: subDepartmentsSummaryStatistics
+      responses:
+        '200':
+          description: Summary statistics by sub-department calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubDepartmentSummaryStatistics'
+      security:
+        - bearerAuth: []
+
+components:
+  requestBodies:
+    Staff:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Staff'
+      description: Staff data that needs to be added to the dataset
+      required: true
+    User:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+      description: User object
+      required: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Staff:
+      title: Staff
+      description: A staff
+      type: object
+      properties:
+        name:
+          type: string
+          example: John
+        salary:
+          type: string
+          example: 25000
+        currency:
+          type: string
+          example: USD
+        on_contract:
+          type: boolean
+          example: false
+          default: false
+        department:
+          type: string
+          example: Engineering
+        sub_department:
+          type: string
+          example: Platform
+    StaffModel:
+      title: StaffModel
+      description: A staff model
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 9aabe305-8cda-4878-acc2-daa2de65a227
+        name:
+          type: string
+          example: John
+        salary:
+          type: string
+          example: 25000
+        currency:
+          type: string
+          example: USD
+        on_contract:
+          type: boolean
+          example: false
+          default: false
+        department:
+          type: string
+          example: Engineering
+        sub_department:
+          type: string
+          example: Platform
+    User:
+      title: A User
+      description: A User
+      type: object
+      properties:
+        username:
+          type: string
+          example: test
+        password:
+          type: string
+          example: secret
+    StaffSummaryStatistics:
+      title: Staff Summary Statistics
+      description: Staff summary statistics
+      type: object
+      properties:
+        mean:
+          type: integer
+          format: int64
+        min:
+          type: integer
+          format: int64
+        max:
+          type: integer
+          format: int64
+    DepartmentSummaryStatistics:
+      title: Department Summary Statistics
+      description: Department summary statistics
+      type: object
+      properties:
+        department:
+          type: object
+          properties:
+            mean:
+              type: integer
+              format: int64
+            min:
+              type: integer
+              format: int64
+            max:
+              type: integer
+              format: int64
+    SubDepartmentSummaryStatistics:
+      title: Department Summary Statistics
+      description: Department summary statistics
+      type: object
+      properties:
+        sub-department:
+          type: object
+          properties:
+            mean:
+              type: integer
+              format: int64
+            min:
+              type: integer
+              format: int64
+            max:
+              type: integer
+              format: int64
+
+    LoginSuccessfulResponse:
+      title: Login successful
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Your login is successful
+        data:
+          type: object
+          properties:
+            accessToken:
+              type: string
+              example: eyJhbGciOiJIUzI1N...
+            expiresIn:
+              type: integer
+              format: int64
+              example: Token expiry time in ms
+
+    LogoutSuccessfulResponse:
+      title: Logout successful
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Your logout is successful
+  
+    InvalidPayloadError:
+      title: Invalid payload error
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Your payload is invalid
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                example: department
+              message:
+                type: string
+                example: The department field is required
+
+    InvalidLoginCredentialError:
+      title: Invalid login credential error
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Your login credential is invalid
+
+    InvalidStaffIdError:
+      title: Invalid staff id error
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: A staff with this id does not exist
+    
+    StaffDeletedResponse:
+      title: Staff successfully deleted
+      type: object
+      properties:
+        message:
+          type: string
+          example: Staff successfully deleted
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: a434357e-3258-4b97-8c64-cf98cd6e73b3

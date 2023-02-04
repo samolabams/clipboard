@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  dataset:
+    build: .
+    container_name: staff-dataset-api
+    restart: always
+    ports:
+      - 8080:8080
+    env_file: .env
+    environment:
+      - APP_NAME=$APP_NAME
+      - PORT=$PORT
+      - LOGIN_USERNAME=$LOGIN_USERNAME
+      - LOGIN_PASSWORD=$LOGIN_PASSWORD
+      - JWT_SECRET=$JWT_SECRET
+      - JWT_EXPIRES_IN=$JWT_EXPIRES_IN
+    volumes:
+      - ./:/src
