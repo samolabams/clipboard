@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/samolabams/clipboard/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/samolabams/clipboard/tree/master)
+
 # Clipboard Coding Exercise
 
 Staff Dataset API
