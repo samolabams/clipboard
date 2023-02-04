@@ -31,7 +31,7 @@ jobs:
           command: npm test
     environment:
       LOGIN_USERNAME: test
-      LOGIN_PASSWORD: $2b$12$$iyqpss9YARCDQrxUkhpqAuM86.Bk/fJafTz2iYXc8lnzMw4t7Lyfy
+      LOGIN_PASSWORD: $2b$12$iyqpss9YARCDQrxUkhpqAuM86.Bk/fJafTz2iYXc8lnzMw4t7Lyfy
       JWT_SECRET: R0xVN94XoV
       JWT_EXPIRES_IN: 1d
 
