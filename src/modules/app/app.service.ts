@@ -3,6 +3,7 @@ class AppService {
     return {
       service: 'Dataset API',
       version: '1.0.0',
+      author: 'samolabams'
     };
   }
 }
