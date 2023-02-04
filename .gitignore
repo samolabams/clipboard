@@ -67,9 +67,3 @@ dist
 .env
 
 .eslintcache
-
-package-lock.json
-
-service-account.json
-
-service-account-firebase.json
